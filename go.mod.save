@@ -1,0 +1,5 @@
+module github.com/winkles99/chirpy-project
+
+go 1.24.2go bui
+
+require github.com/google/uuid v1.6.0 // indirect

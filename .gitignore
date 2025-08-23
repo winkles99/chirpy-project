@@ -1,0 +1,5 @@
+out
+.env
+learn-http-servers/vendor/
+*.exe
+.vscode/
