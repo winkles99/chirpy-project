@@ -3,9 +3,31 @@ package main
 import (
 	"net/http"
 	"time"
+	"github.com/google/uuid"
 )
 
-// Chirp is the API representation of a chirp
+func (cfg *apiConfig) handlerChirpsGet(w http.ResponseWriter, r *http.Request) {
+	chirpIDString := r.PathValue("chirpID")
+	chirpID, err := uuid.Parse(chirpIDString)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid chirp ID", err)
+		return
+	}
+	dbChirp, err := cfg.db.GetChirp(r.Context(), chirpID)
+	if err != nil {
+		respondWithError(w, http.StatusNotFound, "Chirp not found", nil)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, Chirp{
+		ID:        dbChirp.ID.String(),
+		CreatedAt: dbChirp.CreatedAt,
+		UpdatedAt: dbChirp.UpdatedAt,
+		UserID:    dbChirp.UserID.String(),
+		Body:      dbChirp.Body,
+	})
+}
+
 type Chirp struct {
 	ID        string    `json:"id"`
 	UserID    string    `json:"user_id"`
